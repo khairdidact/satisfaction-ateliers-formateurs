@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Satisfaction · Ateliers Formateurs · KHAIRDIDACT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#1a1a2e;--paper:#f5f0e8;--paper-dark:#ede7d9;
+  --sage:#3d6b4f;--sage-lite:#5a9470;--sage-pale:#e8f0eb;
+  --dust:#ddd5c4;--muted:#7a7264;--white:#fff;--radius:14px;
+  --ok:#2d6a3f;--ok-pale:#e8f5ee;--ok-border:#b8d4c0;
+  --err:#8b2222;--err-pale:#faeaea;--gold:#b8860b;--gold-pale:#fdf8e1;
+  --star-empty:#ddd5c4;--star-fill:#e8a020;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--paper);color:var(--ink);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+
+.page{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:44px 22px 80px;}
+
+/* ── Header ── */
+header{text-align:center;margin-bottom:48px;}
+.brand{font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--sage);font-weight:500;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:12px;}
+.brand::before,.brand::after{content:'';width:28px;height:1px;background:var(--sage-lite);}
+h1{font-family:'DM Serif Display',serif;font-size:clamp(24px,5vw,38px);line-height:1.15;margin-bottom:10px;}
+h1 em{font-style:italic;color:var(--sage);}
+.header-sub{font-size:14px;color:var(--muted);max-width:500px;margin:0 auto;line-height:1.7;}
+
+/* ── Card ── */
+.card{background:var(--white);border-radius:var(--radius);padding:28px 32px;box-shadow:0 2px 18px rgba(26,26,46,.07);margin-bottom:20px;}
+.card-title{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:6px;}
+.card-sub{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+.section-tag{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);font-weight:500;margin-bottom:8px;}
+
+/* ── Identification ── */
+.id-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;}
+.form-input{padding:10px 13px;border:1.5px solid var(--dust);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--white);color:var(--ink);transition:border-color .2s;}
+.form-input:focus{outline:none;border-color:var(--sage);}
+.code-display{display:none;margin-top:12px;padding:12px 16px;background:var(--sage-pale);border-radius:9px;border:1.5px solid var(--ok-border);display:flex;align-items:center;gap:12px;}
+.code-label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--sage);font-weight:500;}
+.code-val{font-family:monospace;font-size:15px;font-weight:600;color:var(--sage);letter-spacing:.08em;}
+.anon-note{font-size:11px;color:var(--muted);margin-top:8px;font-style:italic;}
+
+/* ── Étoiles globales ── */
+.global-stars{display:flex;gap:8px;justify-content:center;margin:16px 0 10px;}
+.gstar{font-size:38px;cursor:pointer;transition:transform .15s,color .15s;color:var(--star-empty);user-select:none;line-height:1;}
+.gstar.lit{color:var(--star-fill);}
+.gstar:hover{transform:scale(1.15);}
+.star-label-wrap{text-align:center;height:32px;display:flex;align-items:center;justify-content:center;}
+.star-label{font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;opacity:0;transition:opacity .3s;}
+.star-label.show{opacity:1;}
+@keyframes blink{0%,100%{opacity:1;}45%{opacity:.15;}}
+.star-label.blink{animation:blink 1.5s ease-in-out infinite;}
+
+/* ── Items catégories ── */
+.cat-block{margin-bottom:22px;}
+.cat-title{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--sage);font-weight:500;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--paper-dark);}
+.item-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:14px;padding:9px 0;border-bottom:1px solid rgba(221,213,196,.45);}
+.item-row:last-child{border:none;}
+.item-text{font-size:13px;color:#333;line-height:1.4;}
+.item-stars{display:flex;gap:4px;}
+.istar{font-size:22px;cursor:pointer;color:var(--star-empty);transition:color .12s,transform .12s;user-select:none;}
+.istar.lit{color:var(--star-fill);}
+.istar:hover{transform:scale(1.1);}
+
+/* ── Items radio ── */
+.radio-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.radio-opt{padding:7px 14px;border:1.5px solid var(--dust);border-radius:99px;font-size:12px;cursor:pointer;transition:all .2s;color:var(--muted);}
+.radio-opt.sel{border-color:var(--sage);background:var(--sage-pale);color:var(--sage);font-weight:500;}
+
+/* ── Textarea ── */
+textarea.form-input{resize:vertical;min-height:90px;font-size:13px;line-height:1.6;}
+
+/* ── Bouton ── */
+.btn-valider{width:100%;padding:14px;background:var(--sage);color:var(--white);border:none;border-radius:99px;font-family:'DM Serif Display',serif;font-size:18px;letter-spacing:.04em;cursor:pointer;transition:background .2s,transform .1s;margin-top:8px;}
+.btn-valider:hover{background:var(--sage-lite);}
+.btn-valider:active{transform:scale(.98);}
+.btn-valider:disabled{background:var(--dust);color:var(--muted);cursor:not-allowed;}
+
+/* ── Confirmation ── */
+.confirm-box{display:none;background:var(--ok-pale);border:1.5px solid var(--ok-border);border-radius:12px;padding:20px 24px;margin-top:16px;text-align:center;}
+.confirm-box.show{display:block;animation:fadeUp .4s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.confirm-icon{font-size:32px;margin-bottom:8px;}
+.confirm-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--ok);margin-bottom:4px;}
+.confirm-sub{font-size:12px;color:var(--muted);}
+
+/* ── Feedback section ── */
+.feedback-card{background:var(--ink);border-radius:var(--radius);padding:30px 32px;color:#d4d8f0;box-shadow:0 4px 30px rgba(26,26,46,.18);}
+.feedback-header{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.feedback-dot{width:8px;height:8px;border-radius:50%;background:#5a9470;}
+@keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.feedback-dot{animation:dotPulse 2s infinite;}
+.feedback-title{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#9ca3c4;font-weight:500;}
+.feedback-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+.fstat{background:rgba(255,255,255,.06);border-radius:10px;padding:14px 12px;text-align:center;}
+.fstat-val{font-family:'DM Serif Display',serif;font-size:26px;color:#e8e4da;line-height:1;}
+.fstat-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#6b7280;margin-top:4px;}
+.fstat-sub{font-size:10px;color:#9ca3c4;margin-top:2px;}
+
+/* ── Étoiles feedback clignotantes ── */
+.feedback-stars-row{display:flex;gap:5px;justify-content:center;margin-bottom:18px;}
+@keyframes starPulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.2);opacity:.5;}}
+.fstar{font-size:28px;color:#e8a020;}
+.fstar.pulse{animation:starPulse 1.3s ease-in-out infinite;}
+.fstar.pulse-delay-1{animation-delay:.15s;}
+.fstar.pulse-delay-2{animation-delay:.30s;}
+.fstar.pulse-delay-3{animation-delay:.45s;}
+.fstar.pulse-delay-4{animation-delay:.60s;}
+
+/* ── Synthèse IA ── */
+.synthese-section{border-top:1px solid rgba(255,255,255,.1);padding-top:18px;}
+.synthese-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#6b7280;margin-bottom:10px;}
+.synthese-text{font-size:13px;line-height:1.78;color:#c8cce0;font-style:italic;}
+.synthese-loading{color:#6b7280;font-style:italic;font-size:13px;}
+.synthese-loading::after{content:'';animation:ldots 1.4s infinite;}
+@keyframes ldots{0%{content:'';}33%{content:'.';}66%{content:'..';}100%{content:'...'}}
+.btn-synthese{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;background:rgba(90,148,112,.25);border:1px solid rgba(90,148,112,.5);color:#9ce0b8;border-radius:99px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;cursor:pointer;transition:background .2s;margin-top:10px;}
+.btn-synthese:hover{background:rgba(90,148,112,.4);}
+.no-data{text-align:center;padding:20px;color:#4b5563;font-style:italic;font-size:13px;}
+
+@media(max-width:600px){
+  .id-grid{grid-template-columns:1fr;}
+  .feedback-stats{grid-template-columns:repeat(2,1fr);}
+  .item-row{grid-template-columns:1fr;gap:6px;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="brand">Khairdidact · Armée du Salut</div>
+  <h1>Votre <em>satisfaction</em><br/>compte pour nous</h1>
+  <p class="header-sub">Ateliers Formateurs Bénévoles Alpha-FLE — Ce questionnaire est confidentiel. Vos retours guident l'amélioration continue du dispositif KHAIRDIDACT.</p>
+</header>
+
+<!-- ── 1. IDENTIFICATION ── -->
+<div class="card">
+  <div class="section-tag">Identification</div>
+  <div class="card-title">Qui êtes-vous ?</div>
+  <div class="card-sub">Votre adresse courriel est optionnelle. Si vous la renseignez, un code unique et anonyme vous sera attribué — vous pourrez soumettre plusieurs évaluations liées sans que votre identité soit exposée.</div>
+  <div class="id-grid">
+    <div class="form-group">
+      <label class="form-label">Prénom (optionnel)</label>
+      <input class="form-input" id="f-prenom" type="text" placeholder="Votre prénom"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Courriel (optionnel)</label>
+      <input class="form-input" id="f-email" type="email" placeholder="pour votre code anonyme" oninput="genCode()"/>
+    </div>
+  </div>
+  <div class="form-group" style="margin-top:12px;">
+    <label class="form-label">Atelier / Session évaluée</label>
+    <input class="form-input" id="f-session" type="text" placeholder="Ex : Atelier Méthodes — 8 avril 2026"/>
+  </div>
+  <div class="code-display" id="code-display">
+    <span class="code-label">Votre code</span>
+    <span class="code-val" id="code-val">—</span>
+    <span style="font-size:11px;color:var(--sage);margin-left:auto;">Conservez-le pour vos prochaines évaluations</span>
+  </div>
+  <p class="anon-note">Sans courriel, votre évaluation sera entièrement anonyme.</p>
+</div>
+
+<!-- ── 2. IMPRESSION GLOBALE ── -->
+<div class="card">
+  <div class="section-tag">Impression globale</div>
+  <div class="card-title">Comment évaluez-vous cet atelier ?</div>
+  <div class="card-sub">Cliquez sur le nombre d'étoiles correspondant à votre ressenti général (0 à 5).</div>
+  <div class="global-stars" id="global-stars">
+    <span class="gstar" data-v="0" onclick="setGlobal(0)" title="0 étoile">☆</span>
+    <span class="gstar" data-v="1" onclick="setGlobal(1)">★</span>
+    <span class="gstar" data-v="2" onclick="setGlobal(2)">★</span>
+    <span class="gstar" data-v="3" onclick="setGlobal(3)">★</span>
+    <span class="gstar" data-v="4" onclick="setGlobal(4)">★</span>
+    <span class="gstar" data-v="5" onclick="setGlobal(5)">★</span>
+  </div>
+  <div class="star-label-wrap">
+    <div class="star-label" id="star-label"></div>
+  </div>
+</div>
+
+<!-- ── 3. ITEMS ── -->
+<div class="card">
+  <div class="section-tag">Évaluation détaillée</div>
+  <div class="card-title">Notez chaque dimension</div>
+  <div class="card-sub">De 1 (insuffisant) à 5 (excellent). Laissez vide si l'item ne s'applique pas à votre situation.</div>
+  <div id="items-container"></div>
+
+  <!-- Items spéciaux -->
+  <div class="cat-block">
+    <div class="cat-title">Appréciation libre</div>
+    <div style="margin-bottom:14px;">
+      <div class="form-label" style="margin-bottom:6px;">Durée de la formation</div>
+      <div class="radio-row" id="rg-duree">
+        <span class="radio-opt" onclick="selectRadio('duree',this)">⏩ Trop courte</span>
+        <span class="radio-opt" onclick="selectRadio('duree',this)">✓ Juste</span>
+        <span class="radio-opt" onclick="selectRadio('duree',this)">⏪ Trop longue</span>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div class="form-label" style="margin-bottom:6px;">Charge de travail demandée</div>
+      <div class="radio-row" id="rg-charge">
+        <span class="radio-opt" onclick="selectRadio('charge',this)">🪶 Légère</span>
+        <span class="radio-opt" onclick="selectRadio('charge',this)">⚖ Adaptée</span>
+        <span class="radio-opt" onclick="selectRadio('charge',this)">🏋 Excessive</span>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div class="form-label" style="margin-bottom:6px;">Format préféré pour la suite</div>
+      <div class="radio-row" id="rg-format">
+        <span class="radio-opt" onclick="selectRadio('format',this)">💻 En ligne</span>
+        <span class="radio-opt" onclick="selectRadio('format',this)">🏫 Présentiel</span>
+        <span class="radio-opt" onclick="selectRadio('format',this)">🔀 Hybride</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lacunes + Point fort -->
+  <div class="cat-block">
+    <div class="cat-title">Points qualitatifs</div>
+    <div class="form-group" style="margin-bottom:14px;">
+      <label class="form-label">Lacunes ou manques identifiés dans la formation</label>
+      <input class="form-input" id="f-lacunes" type="text" placeholder="Ce qui aurait mérité plus de place…"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Point fort principal de cet atelier</label>
+      <input class="form-input" id="f-pointfort" type="text" placeholder="Ce qui vous a le plus apporté…"/>
+    </div>
+  </div>
+</div>
+
+<!-- ── 4. COMMENTAIRES ── -->
+<div class="card">
+  <div class="section-tag">Expression libre</div>
+  <div class="card-title">Vos observations et suggestions</div>
+  <div class="card-sub">Partagez librement tout ce qui peut contribuer à améliorer le dispositif KHAIRDIDACT.</div>
+  <textarea class="form-input" id="f-commentaires" rows="5" placeholder="Vos commentaires, suggestions, anecdotes, demandes…"></textarea>
+</div>
+
+<!-- ── 5. VALIDATION ── -->
+<div class="card" style="text-align:center;">
+  <button class="btn-valider" id="btn-valider" onclick="valider()">Envoyer mon évaluation →</button>
+  <div style="font-size:11px;color:var(--muted);margin-top:10px;">Vos réponses seront envoyées à Jotabé (khairdidact@gmail.com) sous forme de tableau récapitulatif.</div>
+  <div class="confirm-box" id="confirm-box">
+    <div class="confirm-icon">✅</div>
+    <div class="confirm-title">Merci pour votre évaluation !</div>
+    <div class="confirm-sub" id="confirm-sub"></div>
+  </div>
+</div>
+
+<!-- ── 6. FEEDBACK AGRÉGÉ ── -->
+<div class="feedback-card" id="feedback-section">
+  <div class="feedback-header">
+    <div class="feedback-dot"></div>
+    <div class="feedback-title">Tableau de bord · Satisfaction collective · données locales</div>
+  </div>
+  <div id="feedback-content">
+    <div class="no-data">Aucune évaluation enregistrée sur cet appareil pour l'instant.</div>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+/* ══════════════════════════════════════════
+   DONNÉES
+══════════════════════════════════════════ */
+const STAR_LABELS = [
+  { text:'Décevant',      color:'#c95a5a' },
+  { text:'Insuffisant',   color:'#c97a30' },
+  { text:'Passable',      color:'#b8860b' },
+  { text:'Satisfaisant',  color:'#5a8a5a' },
+  { text:'Très bien',     color:'#3d6b4f' },
+  { text:'Excellent !',   color:'#2d5038' }
+];
+
+const CATEGORIES = [
+  {
+    title:'Conditions & Logistique',
+    items:[
+      'Conditions matérielles (salle, confort, espace)',
+      'Équipement numérique disponible',
+      'Organisation générale et accueil'
+    ]
+  },
+  {
+    title:'Contenu & Pédagogie',
+    items:[
+      'Clarté des objectifs annoncés',
+      'Pertinence et richesse des contenus',
+      'Qualité des supports KHAIRDIDACT',
+      'Exemples et activités pratiques proposés',
+      'Rythme et progression de la formation'
+    ]
+  },
+  {
+    title:'Animation & Relation',
+    items:[
+      'Qualité et dynamisme de l\'animation',
+      'Interactivité et participation favorisée',
+      'Ambiance et dynamique de groupe',
+      'Écoute et réponse aux questions'
+    ]
+  },
+  {
+    title:'Impact & Attentes',
+    items:[
+      'Adéquation aux attentes initiales',
+      'Applicabilité dans ma pratique bénévole',
+      'Sentiment de progression perçu',
+      'Qualité globale du dispositif KHAIRDIDACT'
+    ]
+  }
+];
+
+const STORAGE_KEY = 'sat_ateliers_v2';
+let globalNote = null;
+const itemNotes = {};
+const radioSelections = {};
+
+/* ══════════════════════════════════════════
+   CONSTRUCTION DES ITEMS
+══════════════════════════════════════════ */
+(function buildItems(){
+  const container = document.getElementById('items-container');
+  let idx = 0;
+  CATEGORIES.forEach(cat => {
+    const block = document.createElement('div');
+    block.className = 'cat-block';
+    block.innerHTML = `<div class="cat-title">${cat.title}</div>`;
+    cat.items.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'item-row';
+      const itemId = 'item-' + idx;
+      row.innerHTML = `
+        <div class="item-text">${item}</div>
+        <div class="item-stars" id="${itemId}">
+          ${[1,2,3,4,5].map(v=>`<span class="istar" data-v="${v}" onclick="setItem('${itemId}',${v})">★</span>`).join('')}
+        </div>`;
+      block.appendChild(row);
+      idx++;
+    });
+    container.appendChild(block);
+  });
+})();
+
+/* ══════════════════════════════════════════
+   ÉTOILES GLOBALES
+══════════════════════════════════════════ */
+function setGlobal(val) {
+  globalNote = val;
+  const stars = document.querySelectorAll('.gstar');
+  stars.forEach((s,i) => {
+    s.classList.toggle('lit', i > 0 && i <= val);
+  });
+  const lbl = document.getElementById('star-label');
+  if (val === 0) {
+    lbl.textContent = '☆ ' + STAR_LABELS[0].text;
+    lbl.style.color = STAR_LABELS[0].color;
+  } else {
+    lbl.textContent = '★'.repeat(val) + ' · ' + STAR_LABELS[val].text;
+    lbl.style.color = STAR_LABELS[val].color;
+  }
+  lbl.className = 'star-label show blink';
+  setTimeout(() => lbl.classList.remove('blink'), 3200);
+  lbl.classList.add('show');
+}
+
+/* ══════════════════════════════════════════
+   ÉTOILES ITEMS
+══════════════════════════════════════════ */
+function setItem(id, val) {
+  itemNotes[id] = val;
+  const stars = document.querySelectorAll(`#${id} .istar`);
+  stars.forEach((s,i) => s.classList.toggle('lit', i < val));
+}
+
+/* ══════════════════════════════════════════
+   RADIO
+══════════════════════════════════════════ */
+function selectRadio(group, el) {
+  radioSelections[group] = el.textContent.trim();
+  const row = el.parentElement;
+  row.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+/* ══════════════════════════════════════════
+   CODE UNIQUE PAR EMAIL
+══════════════════════════════════════════ */
+async function genCode() {
+  const email = document.getElementById('f-email').value.trim();
+  const display = document.getElementById('code-display');
+  const codeEl = document.getElementById('code-val');
+  if (!email || !email.includes('@')) {
+    display.style.display = 'none';
+    return;
+  }
+  const code = await emailToCode(email);
+  codeEl.textContent = code;
+  display.style.display = 'flex';
+}
+
+async function emailToCode(email) {
+  const salt = 'khairdidact-ateliers-2025';
+  const normalized = email.toLowerCase().trim() + salt;
+  try {
+    const enc = new TextEncoder();
+    const buf = await crypto.subtle.digest('SHA-256', enc.encode(normalized));
+    const arr = Array.from(new Uint8Array(buf));
+    return 'KHD-' + arr.slice(0,4).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
+  } catch {
+    let h = 0;
+    for (const c of normalized) h = ((h << 5) - h + c.charCodeAt(0)) | 0;
+    return 'KHD-' + Math.abs(h).toString(16).toUpperCase().padStart(8,'0').slice(0,8);
+  }
+}
+
+/* ══════════════════════════════════════════
+   VALIDATION & ENVOI
+══════════════════════════════════════════ */
+async function valider() {
+  const btn = document.getElementById('btn-valider');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours…';
+
+  const prenom   = document.getElementById('f-prenom').value.trim();
+  const email    = document.getElementById('f-email').value.trim();
+  const session  = document.getElementById('f-session').value.trim();
+  const lacunes  = document.getElementById('f-lacunes').value.trim();
+  const pointfort= document.getElementById('f-pointfort').value.trim();
+  const comment  = document.getElementById('f-commentaires').value.trim();
+  const code     = email ? (document.getElementById('code-val').textContent) : 'ANONYME';
+  const ts       = new Date().toLocaleString('fr-FR');
+
+  // Collecter toutes les notes items
+  const itemResults = [];
+  let catIdx = 0, itemIdx = 0;
+  CATEGORIES.forEach(cat => {
+    cat.items.forEach(item => {
+      const id = 'item-' + itemIdx;
+      itemResults.push({ cat: cat.title, item, note: itemNotes[id] || '—' });
+      itemIdx++;
+    });
+  });
+
+  // Construire le tableau texte
+  const rows = itemResults.map(r =>
+    `${r.cat.padEnd(32)} | ${r.item.padEnd(50)} | ${String(r.note).padEnd(4)}`
+  ).join('\n');
+
+  const subject = encodeURIComponent(
+    `[Satisfaction] ${session || 'Atelier'} — ${code} — ${globalNote !== null ? globalNote + '/5 ★' : 'sans note globale'}`
+  );
+
+  const body = encodeURIComponent(
+`ÉVALUATION DE SATISFACTION · KHAIRDIDACT
+==========================================
+Participant   : ${prenom || '(anonyme)'}
+Code unique   : ${code}
+Courriel      : ${email || '(non renseigné)'}
+Session       : ${session || '(non renseignée)'}
+Date          : ${ts}
+
+── IMPRESSION GLOBALE ─────────────────────
+Note globale  : ${globalNote !== null ? globalNote + ' / 5' : 'Non notée'}
+Appréciation  : ${globalNote !== null ? STAR_LABELS[globalNote].text : '—'}
+
+── ÉVALUATION DÉTAILLÉE ───────────────────
+${'Catégorie'.padEnd(32)} | ${'Item'.padEnd(50)} | Note
+${'-'.repeat(90)}
+${rows}
+
+── APPRÉCIATION LIBRE ─────────────────────
+Durée         : ${radioSelections['duree'] || '—'}
+Charge        : ${radioSelections['charge'] || '—'}
+Format préféré: ${radioSelections['format'] || '—'}
+Lacunes       : ${lacunes || '—'}
+Point fort    : ${pointfort || '—'}
+
+── COMMENTAIRES LIBRES ─────────────────────
+${comment || '(aucun commentaire)'}
+
+==========================================
+Envoyé depuis KHAIRDIDACT Ateliers Formateurs`
+  );
+
+  // Stocker localement
+  const entry = {
+    ts: Date.now(), code, session, globalNote,
+    itemNotes: {...itemNotes}, radioSelections: {...radioSelections},
+    lacunes, pointfort, comment
+  };
+  saveEntry(entry);
+
+  // Ouvrir mailto
+  const a = document.createElement('a');
+  a.href = `mailto:khairdidact@gmail.com?subject=${subject}&body=${body}`;
+  a.click();
+
+  // Confirmation
+  const confirmBox = document.getElementById('confirm-box');
+  const confirmSub = document.getElementById('confirm-sub');
+  confirmSub.textContent = `Code : ${code} · Session : ${session || 'non renseignée'}`;
+  confirmBox.classList.add('show');
+  btn.textContent = '✓ Envoyé';
+  btn.style.background = 'var(--ok)';
+
+  // Mettre à jour le feedback
+  renderFeedback();
+}
+
+/* ══════════════════════════════════════════
+   STOCKAGE LOCAL
+══════════════════════════════════════════ */
+function saveEntry(entry) {
+  const all = getAll();
+  all.push(entry);
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(all)); } catch(e){}
+}
+
+function getAll() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+}
+
+function computeStats(all) {
+  const globals = all.map(e => e.globalNote).filter(n => n !== null && n !== undefined && n !== '');
+  if (!globals.length) return null;
+  const mean = globals.reduce((a,b) => a+b, 0) / globals.length;
+  const variance = globals.reduce((a,b) => a + Math.pow(b-mean,2), 0) / globals.length;
+  const sd = Math.sqrt(variance);
+  const comments = all.map(e => e.comment || e.commentaires).filter(Boolean);
+  const ceil = Math.ceil(mean);
+  return { count: all.length, mean, sd, ceil, comments };
+}
+
+/* ══════════════════════════════════════════
+   RENDU FEEDBACK
+══════════════════════════════════════════ */
+function renderFeedback() {
+  const all = getAll();
+  const stats = computeStats(all);
+  const el = document.getElementById('feedback-content');
+
+  if (!stats) {
+    el.innerHTML = `<div class="no-data">Aucune évaluation enregistrée sur cet appareil pour l'instant.</div>`;
+    return;
+  }
+
+  const starsHTML = Array.from({length:5},(_, i) => {
+    const full = i < stats.ceil;
+    const cls  = full ? `fstar pulse pulse-delay-${i}` : 'fstar' ;
+    return `<span class="${cls}" style="opacity:${full?1:.25}">★</span>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="feedback-stars-row">${starsHTML}</div>
+    <div style="text-align:center;font-size:11px;color:#6b7280;margin-bottom:18px;">
+      Moyenne arrondie au plafond · ${STAR_LABELS[Math.min(stats.ceil,5)]?.text || ''}
+    </div>
+    <div class="feedback-stats">
+      <div class="fstat">
+        <div class="fstat-val">${stats.count}</div>
+        <div class="fstat-label">Avis</div>
+        <div class="fstat-sub">sur cet appareil</div>
+      </div>
+      <div class="fstat">
+        <div class="fstat-val">${stats.mean.toFixed(2)}</div>
+        <div class="fstat-label">Moyenne</div>
+        <div class="fstat-sub">sur 5</div>
+      </div>
+      <div class="fstat">
+        <div class="fstat-val">±${stats.sd.toFixed(2)}</div>
+        <div class="fstat-label">Écart-type</div>
+        <div class="fstat-sub">dispersion</div>
+      </div>
+      <div class="fstat">
+        <div class="fstat-val">${stats.ceil} ★</div>
+        <div class="fstat-label">Note plafond</div>
+        <div class="fstat-sub">arrondie sup.</div>
+      </div>
+    </div>
+    <div class="synthese-section">
+      <div class="synthese-label">Synthèse IA des observations écrites (${stats.comments.length} commentaire${stats.comments.length>1?'s':''})</div>
+      <div class="synthese-text" id="synthese-text">
+        ${stats.comments.length === 0
+          ? '<span style="color:#4b5563;font-size:12px;">Aucun commentaire écrit pour l\'instant.</span>'
+          : `<span style="color:#4b5563;font-size:12px;">${stats.comments.length} commentaire${stats.comments.length>1?'s'  :''} disponible${stats.comments.length>1?'s':''}.</span>`}
+      </div>
+      ${stats.comments.length > 0
+        ? `<button class="btn-synthese" onclick="lancerSynthese()">🤖 Générer la synthèse IA des commentaires</button>`
+        : ''}
+    </div>`;
+}
+
+/* ══════════════════════════════════════════
+   SYNTHÈSE IA
+══════════════════════════════════════════ */
+async function lancerSynthese() {
+  const all = getAll();
+  const comments = all.map(e => e.comment || e.commentaires).filter(Boolean);
+  if (!comments.length) return;
+
+  const el = document.getElementById('synthese-text');
+  el.innerHTML = '<div class="synthese-loading">Analyse des commentaires en cours</div>';
+  document.querySelector('.btn-synthese').style.display = 'none';
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:600,
+        system:"Tu es l'assistant pédagogique de KHAIRDIDACT, programme de formation de formateurs bénévoles Alpha-FLE de l'Armée du Salut. Tu analyses des retours de satisfaction d'ateliers de formation.",
+        messages:[{
+          role:"user",
+          content:`Voici ${comments.length} commentaires libres de participants à nos ateliers de formation bénévole Alpha-FLE :\n\n${comments.map((c,i)=>`[${i+1}] ${c}`).join('\n')}\n\nProduis une synthèse analytique en 6 à 8 lignes : identifie les points forts récurrents, les axes d'amélioration signalés, les attentes exprimées, et une recommandation concrète pour l'équipe de coordination. Sois synthétique, bienveillant et précis.`
+        }]
+      })
+    });
+    const data = await response.json();
+    el.innerHTML = data.content[0].text.split('\n').filter(Boolean).map(l=>`<p style="margin-bottom:6px;">${l}</p>`).join('');
+  } catch {
+    el.innerHTML = `<p style="color:#9ca3c4;">Synthèse indisponible (connexion API requise). ${comments.length} commentaire(s) en attente d'analyse.</p>`;
+  }
+}
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+renderFeedback();
+</script>
+</body>
+</html>
